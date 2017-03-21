@@ -18,11 +18,14 @@ public class ImageThread extends Thread{
     private int wdith;
     private int height;
 
+    private String group;
+    private int port;
+
     public ImageThread(MulticastSocket s, image_window iw, int wdith, int height){
         this.s = s;
         this.iw = iw;
 
-        this.imageSock = new Communication(s);
+        this.imageSock = new Communication(s, group, port);
 
         this.is = new ImageSize();
         this.wdith = wdith;
@@ -44,7 +47,7 @@ public class ImageThread extends Thread{
 
             try {
                 if(!(imageBuf.getWidth() == wdith && imageBuf.getHeight() == height))
-                   imageBuf = is.reSizing(imageBuf, wdith - 30, height - 50);
+                   imageBuf = is.reSizing(imageBuf, wdith, height);
             }catch (IOException e){
                 e.printStackTrace();
             }

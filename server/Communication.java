@@ -14,14 +14,23 @@ public class Communication {
     private int DATA_MAX_SIZE = 65507;
     private int NUMBER_OF_PACKETS = 255;
 
-    //cursor buffer size
-    private int EXCEPT_BUFFER_LEN = 4;
+    private MulticastSocket s;
+    private DatagramPacket pack;
 
-    MulticastSocket s;
-    DatagramPacket pack;
+    private String group;
+    private int port;
 
+    //send socket
     public Communication(MulticastSocket s){
         this.s = s;
+    }
+
+    //recv socket
+    public Communication(MulticastSocket s, String group, int port){
+        this.s = s;
+
+        this.group = group;
+        this.port = port;
     }
 
     public BufferedImage recvImage(){
@@ -56,18 +65,15 @@ public class Communication {
         }
     }
 
-    public byte[] recvPointer(){
-        byte[] cursorPosi = new byte[4];
-
+    public void sendPointer(byte[] outBuf, String group, int port){
         try {
-            pack = new DatagramPacket(cursorPosi, cursorPosi.length);
-            s.receive(pack);
-            if(cursorPosi.length == EXCEPT_BUFFER_LEN){
-                return cursorPosi;
-            }
-        }catch (IOException e){
+            //Test
+            System.out.println(outBuf);
+            /* Create and send a datagram package */
+            pack = new DatagramPacket(outBuf, outBuf.length, InetAddress.getByName(group), port);
+            s.send(pack);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 }

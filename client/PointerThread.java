@@ -7,53 +7,42 @@ import java.net.MulticastSocket;
  * Created by Minsungkim on 2017-03-18.
  */
 public class PointerThread extends Thread{
-    private Communication communication;
+    private MulticastSocket s;
 
-    private byte[] outBuf;
+    private Communication pointerSock;
 
-    private PointerInfo pointer;
-    private PointerInfo tmpPointer;
+    private byte[] inBuf;
 
-    public PointerThread(Communication communication){
-        this.communication = communication;
-        outBuf = new byte[4];
+    private int x, y;
+    private byte status;
 
-        this.pointer = MouseInfo.getPointerInfo();
+    MouseControll mouseControll;
+
+    public PointerThread(Communication pointerSock){
+        this.s = s;
+        this.pointerSock = pointerSock;
+
+        inBuf = new byte[4];
+        mouseControll = new MouseControll();
     }
 
-    private void putInt(int value, byte[] array, int offset) {
-        array[offset]   = (byte)(0xff & (value >> 8));
-        array[offset+1] = (byte)(0xff & value);
+    //byte to int
+    public double getInt(byte[] array, int offset) {
+        return (double) (((array[offset] & 0xff) << 8) | ((array[offset+1] & 0xff)));
     }
 
     @Override
     public void run(){
-        while(true) {
-            //Get pointer posi
-            tmpPointer = MouseInfo.getPointerInfo();
-            if (tmpPointer != null) {
-                if (pointer.getLocation().getX() != tmpPointer.getLocation().getX() ||
-                        pointer.getLocation().getY() != tmpPointer.getLocation().getY()) {
-                    pointer = tmpPointer;
-                /* Cursor coordinates */
-                    int x = (int) pointer.getLocation().getX();
-                    int y = (int) pointer.getLocation().getY();
+        while(true){
+            inBuf = pointerSock.recvPointer();
 
-                    System.out.println("X : " + x + ", Y : " + y);
-                /* Put the coordinates into byte array */
-                    putInt(x, outBuf, 0);
-                    putInt(y, outBuf, 2);
+            if(inBuf != null) {
+                x = (int) getInt(inBuf, 0);
+                y = (int) getInt(inBuf, 2);
 
-                    communication.sendPointer(outBuf);
-                }
-            }
-
-            try {
-                Thread.sleep(50);
-            }catch (InterruptedException e){
-                e.printStackTrace();
+                System.out.println("x : " + x + ", y : " + y + ", status : " + status);
+                mouseControll.MouseContorl(x, y);
             }
         }
     }
-
 }

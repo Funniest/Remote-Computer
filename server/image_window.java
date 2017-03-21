@@ -2,13 +2,14 @@
  * Created by Minsungkim on 2017-03-15.
  */
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.text.html.ImageView;
 import java.awt.GridBagConstraints;
 import javax.swing.ImageIcon;
@@ -23,7 +24,9 @@ public class image_window extends JFrame{
     //cursor
     private JLabel cursor;
     private Dimension size;
+
     private int x, y;
+    private boolean bEnter;
 
     //Menubar
     private JMenuBar menuBar = new JMenuBar();
@@ -35,6 +38,8 @@ public class image_window extends JFrame{
     private JMenuItem sizeItem_5 = new JMenuItem("1920x1080");
     private JMenuItem sizeItem_6 = new JMenuItem("Full Screen");
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    MouseEventListener mouseListener;
 
     public image_window(int width, int height) {
         this.width = width;
@@ -52,13 +57,6 @@ public class image_window extends JFrame{
         setLayout(null);
 
         setVisible(true);
-    }
-
-    public void setCursorX(int x){
-        this.x = x;
-    }
-    public void setCursorY(int y){
-        this.y = y;
     }
 
     /*init*/
@@ -88,6 +86,10 @@ public class image_window extends JFrame{
         cursor.setBounds(this.x, this.y, size.width, size.height);
 
         setMenuBar();
+
+        mouseListener = new MouseEventListener();
+        addMouseListener(mouseListener);
+        addMouseMotionListener(mouseListener);
 
         // Set the size of the JFrame and
         // make it visible
@@ -138,5 +140,60 @@ public class image_window extends JFrame{
     public int getWindowHeight(){
         height = getHeight();
         return height;
+    }
+
+    //Mouse Pointer
+    public int getMouse_x(){
+        return x;
+    }
+
+    public int getMouse_y(){
+        return  y;
+    }
+
+    public boolean getMouseStatus(){
+        return bEnter;
+    }
+
+    class MouseEventListener implements MouseInputListener {
+        Point origin;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            System.out.println("Enter");
+            bEnter = true;
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            System.out.println("Exit");
+            bEnter = false;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            x = e.getX();
+            y = e.getY();
+        }
     }
 }

@@ -25,9 +25,16 @@ public class Main {
         int pointerPort = 5001;
         String pointerGroup = "225.4.5.7";
         MulticastSocket pointerS = null;
+
+        try {
+            pointerS = new MulticastSocket(pointerPort);
+            pointerS.joinGroup(InetAddress.getByName(pointerGroup));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
         try {
             imageS = new MulticastSocket();
-            pointerS = new MulticastSocket();
         } catch (IOException e) {
             System.out.println("멀티캐스트 소켓 초기화 실패");
         }

@@ -27,8 +27,7 @@ public class Main {
         int pointerPort = 5001;
         String pointerGroup = "225.4.5.7";
 
-        MulticastSocket pointerS = new MulticastSocket(pointerPort);
-        pointerS.joinGroup(InetAddress.getByName(pointerGroup));
+        MulticastSocket pointerS = new MulticastSocket();
 
         image_window iw = new image_window(1280, 768);
 
@@ -39,7 +38,7 @@ public class Main {
         imageThread.start();
 
         //Pointer Thread
-        PointerThread pThread = new PointerThread(pointerS, iw);
+        PointerThread pThread = new PointerThread(pointerS, iw, pointerGroup, pointerPort);
         Thread pointerThread = new Thread(pThread);
         pointerThread.setDaemon(true);
         pointerThread.start();

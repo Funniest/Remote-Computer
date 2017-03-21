@@ -12,6 +12,9 @@ public class Communication {
     private int DATA_MAX_SIZE = 65507;
     private int HEADER_SIZE = 2;
 
+    //cursor buffer size
+    private int EXCEPT_BUFFER_LEN = 4;
+
     //PORT, IP
     private int port;
     private String group;
@@ -58,15 +61,20 @@ public class Communication {
         //s.close();
     }
 
-    public void sendPointer(byte[] outBuf){
+    public byte[] recvPointer(){
+        byte[] cursorPosi = new byte[4];
+
         try {
-            //Test
-            System.out.println(outBuf);
-            /* Create and send a datagram package */
-            pack = new DatagramPacket(outBuf, outBuf.length, InetAddress.getByName(group), port);
-            s.send(pack);
-        } catch (IOException e) {
+            pack = new DatagramPacket(cursorPosi, cursorPosi.length);
+            System.out.println("Recv wait");
+             s.receive(pack);
+            System.out.println("len : " + cursorPosi[0]);
+            if(cursorPosi.length == EXCEPT_BUFFER_LEN){
+                return cursorPosi;
+            }
+        }catch (IOException e){
             e.printStackTrace();
         }
+        return null;
     }
 }

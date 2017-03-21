@@ -27,6 +27,7 @@ public class ScreenShot {
     public BufferedImage getScreenshot(){
         BufferedImage bufImage = null;
         bufImage = robot.createScreenCapture(screenRect);
+        System.out.println("Screenshot!");
         return bufImage;
     }
 
